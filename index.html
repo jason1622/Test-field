@@ -151,8 +151,37 @@
         }
 
         function submitForm() {
-            alert("Form submitted successfully!");
+    const name = document.getElementById("name").value;
+    const surname = document.getElementById("surname").value;
+    const studentNumber = document.getElementById("studentNumber").value;
+    const firstChoices = Array.from(document.querySelectorAll("#box1 .topic")).map(topic => topic.textContent).join(", ");
+    const secondChoices = Array.from(document.querySelectorAll("#box2 .topic")).map(topic => topic.textContent).join(", ");
+    const thirdChoices = Array.from(document.querySelectorAll("#box3 .topic")).map(topic => topic.textContent).join(", ");
+
+    const data = {
+        name: name,
+        surname: surname,
+        studentNumber: studentNumber,
+        firstChoices: firstChoices,
+        secondChoices: secondChoices,
+        thirdChoices: thirdChoices
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbyv6Y9UsI_oIAPWv-IZyOHcen16tOsOSLRkoo10VmoqkdAXpUj61KmXtT_vyjG8jCjl/exec", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            "Content-Type": "application/json"
         }
+    })
+    .then(response => response.text())
+    .then(message => {
+        alert(message);
+    })
+    .catch(error => {
+        alert("Error submitting form!");
+    });
+}
     </script>
 </body>
 </html>
