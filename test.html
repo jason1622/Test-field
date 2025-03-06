@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Topics Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #0d0f1a;
+            color: #00ffff;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .box {
+            width: 220px;
+            min-height: 320px;
+            border: 2px solid #00ffff;
+            padding: 10px;
+            background: linear-gradient(135deg, #1a1d2e, #293249);
+            color: white;
+            border-radius: 12px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .box:hover {
+            transform: scale(1.05);
+        }
+        .topic-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 660px;
+        }
+        .topic {
+            padding: 10px;
+            margin: 5px;
+            background: #00ffff;
+            color: #0d0f1a;
+            cursor: grab;
+            display: inline-block;
+            border-radius: 8px;
+            transition: background 0.2s ease-in-out;
+        }
+        .topic:hover {
+            background: #ff00ff;
+            color: white;
+        }
+        .submit-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            font-size: 16px;
+            background-color: #ff00ff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background 0.3s ease-in-out;
+        }
+        .submit-btn:hover {
+            background-color: #00ffff;
+            color: #0d0f1a;
+        }
+        .submit-btn:disabled {
+            background-color: grey;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h2>Drag and Drop Research Topics</h2>
+    
+    <form id="studentForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" required>
+        <label for="surname">Surname:</label>
+        <input type="text" id="surname" required>
+        <label for="studentNumber">Student Number:</label>
+        <input type="text" id="studentNumber" required>
+    </form>
+    
+    <p>Drag each of the following topics into one of the boxes below: 1st choices, 2nd choices, and 3rd choices. Once all topics have been allocated to a choice, please click 'submit'.</p>
+    
+    <div id="topics" class="topic-container" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <script>
+            for (let i = 1; i <= 23; i++) {
+                document.write(`<div class="topic" draggable="true" ondragstart="drag(event)" id="topic${i}">Topic ${i}</div>`);
+            }
+        </script>
+    </div>
+    
+    <div class="container">
+        <div class="box" id="box1" ondrop="drop(event, 'box1', 10)" ondragover="allowDrop(event)">
+            <p><strong>First Choices (Must have 10)</strong></p>
+        </div>
+        <div class="box" id="box2" ondrop="drop(event, 'box2', 10)" ondragover="allowDrop(event)">
+            <p><strong>Second Choices (Must have 10)</strong></p>
+        </div>
+        <div class="box" id="box3" ondrop="drop(event, 'box3', 3)" ondragover="allowDrop(event)">
+            <p><strong>Third Choices (Must have 3)</strong></p>
+        </div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitForm()" disabled>Submit</button>
+    
+    <script>
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function drop(event, boxId, maxItems) {
+            event.preventDefault();
+            let data = event.dataTransfer.getData("text");
+            let draggedElement = document.getElementById(data);
+            let box = document.getElementById(boxId);
+            let originalContainer = document.getElementById("topics");
+            
+            if (box && box.children.length - 1 < maxItems) {
+                box.appendChild(draggedElement);
+            } else if (box === originalContainer) {
+                originalContainer.appendChild(draggedElement);
+            } else {
+                alert("This box is full! Choose another.");
+            }
+            checkCompletion();
+        }
+        
+        function checkCompletion() {
+            let box1Count = document.querySelectorAll("#box1 .topic").length;
+            let box2Count = document.querySelectorAll("#box2 .topic").length;
+            let box3Count = document.querySelectorAll("#box3 .topic").length;
+            let name = document.getElementById("name").value.trim();
+            let surname = document.getElementById("surname").value.trim();
+            let studentNumber = document.getElementById("studentNumber").value.trim();
+            
+            let submitBtn = document.getElementById("submitBtn");
+            if (box1Count === 10 && box2Count === 10 && box3Count === 3 && name && surname && studentNumber) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+
+        function submitForm() {
+            alert("Form submitted successfully!");
+        }
+    </script>
+</body>
+</html>
